@@ -49,10 +49,19 @@ namespace CheeseMods.CustomSounds
 
         protected override void ApplyAudio()
         {
+            atcVoiceProfiles.Clear();
+
             for (int i = 0; i < audioProfiles.Count; i++)
             {
                 atcVoiceProfiles.Add(GenerateATCVoiceProfile(audioProfiles[i]));
             }
+        }
+
+        public override void UnloadAudioProfiles()
+        {
+            base.UnloadAudioProfiles();
+
+            atcVoiceProfiles.Clear();
         }
 
         public ATCVoiceProfile GenerateATCVoiceProfile(AudioProfile profile)

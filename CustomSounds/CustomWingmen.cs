@@ -8,6 +8,8 @@ namespace CheeseMods.CustomSounds
 {
     public class CustomWingmen : CustomSoundsBase
     {
+        public List<WingmanVoiceProfile> wingmen = new List<WingmanVoiceProfile>();
+
         protected override void ApplyAudio()
         {
             Debug.Log("Loading wingmen just to be sure");
@@ -23,7 +25,11 @@ namespace CheeseMods.CustomSounds
                 if (!stockWingmen.ContainsKey(profile.name))
                 {
                     Debug.Log("Adding " + profile.name + " to the stock wingmen");
-                    stockWingmen.Add(profile.name, GenerateWingmanVoiceProfile(profile));
+
+                    WingmanVoiceProfile voiceProfile = GenerateWingmanVoiceProfile(profile);
+
+                    stockWingmen.Add(profile.name, voiceProfile);
+                    wingmen.Add(voiceProfile);
                 }
                 else
                 {
@@ -36,6 +42,23 @@ namespace CheeseMods.CustomSounds
             traverse.Field("wingmanVoices").SetValue(stockWingmen);
 
             Debug.Log("Yay, it worked!");
+        }
+
+        public override void UnloadAudioProfiles()
+        {
+            base.UnloadAudioProfiles();
+
+            Traverse traverse = Traverse.Create(typeof(VTResources));
+            Dictionary<string, WingmanVoiceProfile> stockWingmen = (Dictionary<string, WingmanVoiceProfile>)traverse.Field("wingmanVoices").GetValue();
+
+            foreach (WingmanVoiceProfile voiceProfile in wingmen)
+            {
+                stockWingmen.Remove(voiceProfile.name);
+            }
+
+            traverse.Field("wingmanVoices").SetValue(stockWingmen);
+
+            wingmen.Clear();
         }
 
         public WingmanVoiceProfile GetDefaultVoiceProfileClone()
@@ -61,7 +84,10 @@ namespace CheeseMods.CustomSounds
             {
                 WingmanVoiceProfile.MessageAudio target = output.messageProfiles.First(p => p.messageType.ToString() == profile.lineTypes[i].type);
                 int targetIndex = output.messageProfiles.IndexOf(target);
-                output.messageProfiles[targetIndex] = GenerateMessageAudio(profile.lineTypes[i]);
+                if (profile.lineTypes[i].lines.Any())
+                {
+                    output.messageProfiles[targetIndex] = GenerateMessageAudio(profile.lineTypes[i]);
+                }
             }
             return output;
         }

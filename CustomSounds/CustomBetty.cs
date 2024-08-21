@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CheeseMods.CustomSounds
@@ -47,9 +48,36 @@ namespace CheeseMods.CustomSounds
         }
 
         public class Betty {
-            public Betty()
+            public Betty(FlightWarnings.CommonWarningsClips stockBettyWarnings)
             {
                 commonWarnings = new FlightWarnings.CommonWarningsClips();
+
+                commonWarnings.EngineFailure = stockBettyWarnings.EngineFailure;
+                commonWarnings.LeftEngineFailure = stockBettyWarnings.LeftEngineFailure;
+                commonWarnings.RightEngineFailure = stockBettyWarnings.RightEngineFailure;
+                commonWarnings.APUFailure = stockBettyWarnings.APUFailure;
+                commonWarnings.HydraulicsFailure = stockBettyWarnings.HydraulicsFailure;
+                commonWarnings.Chaff = stockBettyWarnings.Chaff;
+                commonWarnings.ChaffLow = stockBettyWarnings.ChaffLow;
+                commonWarnings.ChaffEmpty = stockBettyWarnings.ChaffEmpty;
+                commonWarnings.Flare = stockBettyWarnings.Flare;
+                commonWarnings.FlareLow = stockBettyWarnings.FlareLow;
+                commonWarnings.FlareEmpty = stockBettyWarnings.FlareEmpty;
+                commonWarnings.BingoFuel = stockBettyWarnings.BingoFuel;
+                commonWarnings.Altitude = stockBettyWarnings.Altitude;
+                commonWarnings.PullUp = stockBettyWarnings.PullUp;
+                commonWarnings.OverG = stockBettyWarnings.OverG;
+                commonWarnings.MissileLaunch = stockBettyWarnings.MissileLaunch;
+                commonWarnings.Missile = stockBettyWarnings.Missile;
+                commonWarnings.Shoot = stockBettyWarnings.Shoot;
+                commonWarnings.Pitbull = stockBettyWarnings.Pitbull;
+                commonWarnings.Warning = stockBettyWarnings.Warning;
+                commonWarnings.Fire = stockBettyWarnings.Fire;
+                commonWarnings.FuelLeak = stockBettyWarnings.FuelLeak;
+                commonWarnings.FuelDump = stockBettyWarnings.FuelDump;
+                commonWarnings.LandingGear = stockBettyWarnings.LandingGear;
+                commonWarnings.AutopilotOff = stockBettyWarnings.AutopilotOff;
+                commonWarnings.WingFold = stockBettyWarnings.WingFold;
             }
 
             public string name;
@@ -67,20 +95,37 @@ namespace CheeseMods.CustomSounds
             public AudioClip stallWarning;
         }
 
+        public FlightWarnings.CommonWarningsClips stockBettyWarnings;
         public Betty currentBetty;
         public List<Betty> bettys = new List<Betty>();
 
         protected override void ApplyAudio()
         {
+            bettys.Clear();
+
+            if (stockBettyWarnings == null)
+            {
+                GameObject vehiclePrefab = VTResources.GetPlayerVehicleList().First().vehiclePrefab;
+                FlightWarnings fw = vehiclePrefab.GetComponentInChildren<FlightWarnings>(true);
+                stockBettyWarnings = fw.commonWarningsClips;
+            }
+
             for (int i = 0; i < audioProfiles.Count; i++)
             {
                 bettys.Add(GenerateBettyVoiceProfile(audioProfiles[i]));
             }
         }
 
+        public override void UnloadAudioProfiles()
+        {
+            base.UnloadAudioProfiles();
+
+            bettys.Clear();
+        }
+
         public Betty GenerateBettyVoiceProfile(AudioProfile profile)
         {
-            Betty betty = new Betty();
+            Betty betty = new Betty(stockBettyWarnings);
             betty.name = profile.name;
             foreach (AudioProfileLineType lines in profile.lineTypes)
             {

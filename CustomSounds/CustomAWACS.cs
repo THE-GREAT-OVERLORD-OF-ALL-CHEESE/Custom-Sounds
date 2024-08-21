@@ -39,10 +39,19 @@ namespace CheeseMods.CustomSounds
 
         protected override void ApplyAudio()
         {
+            awacsVoiceProfiles.Clear();
+
             for (int i = 0; i < audioProfiles.Count; i++)
             {
                 awacsVoiceProfiles.Add(GenerateAWACSVoiceProfile(audioProfiles[i]));
             }
+        }
+
+        public override void UnloadAudioProfiles()
+        {
+            base.UnloadAudioProfiles();
+
+            awacsVoiceProfiles.Clear();
         }
 
         public AWACSVoiceProfile GetDefaultVoiceProfileClone()

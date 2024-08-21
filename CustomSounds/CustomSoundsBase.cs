@@ -119,7 +119,7 @@ namespace CheeseMods.CustomSounds
 
         }
 
-        public void UnloadAudioProfiles()
+        public virtual void UnloadAudioProfiles()
         {
             StopAllCoroutines();
 
