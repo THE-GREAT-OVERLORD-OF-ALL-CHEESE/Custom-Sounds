@@ -129,7 +129,10 @@ namespace CheeseMods.CustomSounds
             betty.name = profile.name;
             foreach (AudioProfileLineType lines in profile.lineTypes)
             {
-                AudioClip temp = GenerateMessageAudio(lines)[0];
+                AudioClip temp = GenerateMessageAudio(lines).FirstOrDefault();
+                if (temp == null)
+                    continue;
+
                 switch (MessageType(lines.type))
                 {
                     case CommonWarnings2.EngineFailure:
