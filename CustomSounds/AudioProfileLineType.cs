@@ -14,19 +14,19 @@ namespace CheeseMods.CustomSounds
         {
             lines.Clear();
 
-            Debug.Log("Checking for: " + filePath);
+            //Debug.Log("Checking for: " + filePath);
 
             if (Directory.Exists(filePath))
             {
-                Debug.Log(filePath + " exists!");
+                //Debug.Log(filePath + " exists!");
                 DirectoryInfo info = new DirectoryInfo(filePath);
                 foreach (FileInfo item in info.GetFiles("*.wav"))
                 {
-                    Debug.Log("Found line: " + item.Name);
+                    //Debug.Log("Found line: " + item.Name);
                     AudioProfileLine temp = new AudioProfileLine();
                     temp.filePath = item.FullName;
                     lines.Add(temp);
-                    Debug.Log("\n");
+                    //Debug.Log("\n");
                 }
             }
             else

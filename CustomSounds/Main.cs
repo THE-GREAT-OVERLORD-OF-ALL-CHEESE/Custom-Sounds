@@ -72,18 +72,33 @@ namespace CheeseMods.CustomSounds
             UnloadAudioProfiles();
 
             string localModsDir = Path.Combine(Directory.GetCurrentDirectory(), "@Mod Loader", @"Mods");
+            LoadAudioProfilesInDir(localModsDir);
 
-            wingmenVoices.LoadAudioProfiles(localModsDir, "voiceinfo", GetEnumValueNames(typeof(WingmanVoiceProfile.Messages)));
-            atcVoices.LoadAudioProfiles(localModsDir, "atcvoiceinfo", GetEnumValueNames(typeof(ATCLines)));
-            awacsVoices.LoadAudioProfiles(localModsDir, "awacsvoiceinfo", GetEnumValueNames(typeof(AWACSLines)));
-            bettyVoices.LoadAudioProfiles(localModsDir, "bettyvoiceinfo", GetEnumValueNames(typeof(CommonWarnings2)));
+            foreach (DirectoryInfo directory in new DirectoryInfo(localModsDir).EnumerateDirectories())
+            {
+                LoadAudioProfilesInDir(directory.FullName);
+            }
 
             string workshopModsDir = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\workshop\content\3018410");
+            LoadAudioProfilesInDir(workshopModsDir);
 
-            wingmenVoices.LoadAudioProfiles(workshopModsDir, "voiceinfo", GetEnumValueNames(typeof(WingmanVoiceProfile.Messages)));
-            atcVoices.LoadAudioProfiles(workshopModsDir, "atcvoiceinfo", GetEnumValueNames(typeof(ATCLines)));
-            awacsVoices.LoadAudioProfiles(workshopModsDir, "awacsvoiceinfo", GetEnumValueNames(typeof(AWACSLines)));
-            bettyVoices.LoadAudioProfiles(workshopModsDir, "bettyvoiceinfo", GetEnumValueNames(typeof(CommonWarnings2)));
+            foreach (DirectoryInfo directory in new DirectoryInfo(workshopModsDir).EnumerateDirectories())
+            {
+                LoadAudioProfilesInDir(directory.FullName);
+            }
+
+            wingmenVoices.LoadAudioFile();
+            atcVoices.LoadAudioFile();
+            awacsVoices.LoadAudioFile();
+            bettyVoices.LoadAudioFile();
+        }
+
+        private void LoadAudioProfilesInDir(string dir)
+        {
+            wingmenVoices.FindAudioProfiles(dir, "voiceinfo", GetEnumValueNames(typeof(WingmanVoiceProfile.Messages)));
+            atcVoices.FindAudioProfiles(dir, "atcvoiceinfo", GetEnumValueNames(typeof(ATCLines)));
+            awacsVoices.FindAudioProfiles(dir, "awacsvoiceinfo", GetEnumValueNames(typeof(AWACSLines)));
+            bettyVoices.FindAudioProfiles(dir, "bettyvoiceinfo", GetEnumValueNames(typeof(CommonWarnings2)));
         }
 
         private string[] GetEnumValueNames(Type enumToSearch)

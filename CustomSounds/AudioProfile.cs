@@ -14,28 +14,28 @@ namespace CheeseMods.CustomSounds
         {
             lineTypes.Clear();
 
-            Debug.Log("Checking for: " + filePath);
+            //Debug.Log("Checking for: " + filePath);
 
             if (Directory.Exists(filePath))
             {
-                Debug.Log(filePath + " exists!");
+                //Debug.Log(filePath + " exists!");
                 DirectoryInfo info = new DirectoryInfo(filePath);
                 foreach (string lineTypeString in lineTypeStrings)
                 {
-                    Debug.Log("Checking for: " + lineTypeString);
+                    //Debug.Log("Checking for: " + lineTypeString);
                     if (Directory.Exists(Path.Combine(filePath, lineTypeString)))
                     {
-                        Debug.Log("Found: " + lineTypeString);
+                        //Debug.Log("Found: " + lineTypeString);
                         AudioProfileLineType temp = new AudioProfileLineType();
                         temp.filePath = Path.Combine(filePath, lineTypeString);
                         temp.type = lineTypeString;
                         temp.GetFilePaths();
                         lineTypes.Add(temp);
-                        Debug.Log("\n");
+                        //Debug.Log("\n");
                     }
                     else
                     {
-                        Debug.Log(Path.Combine(filePath, lineTypeString) + " doesn't exist, please add it or the voicepack will not work as intended.");
+                        Debug.Log(Path.Combine(filePath, lineTypeString) + " doesn't exist, please add it or the voicepack may not work as intended.");
                     }
                 }
             }
@@ -43,6 +43,7 @@ namespace CheeseMods.CustomSounds
             {
                 Debug.Log(filePath + " doesn't exist.");
             }
+            Debug.Log("\n");
         }
 
         public void Unload()

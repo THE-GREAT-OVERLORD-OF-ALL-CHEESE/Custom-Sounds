@@ -9,30 +9,31 @@ using UnityEngine.Networking;
 
 namespace CheeseMods.CustomSounds
 {
-    public class CustomSoundsBase : MonoBehaviour
+    public abstract class CustomSoundsBase : MonoBehaviour
     {
         public List<AudioProfile> audioProfiles = new List<AudioProfile>();
         public List<TaskInfo> tasksInProgress = new List<TaskInfo>();
 
-        public void LoadAudioProfiles(string directoryPath, string profileType, string[] lineTypes)
+        public void FindAudioProfiles(string directoryPath, string profileType, string[] lineTypes)
         {
-            Debug.Log("Checking for: " + directoryPath);
+            //Debug.Log("Checking for: " + directoryPath);
 
             if (Directory.Exists(directoryPath))
             {
-                Debug.Log(directoryPath + " exists!");
+                //Debug.Log(directoryPath + " exists!");
                 DirectoryInfo info = new DirectoryInfo(directoryPath);
                 foreach (DirectoryInfo item in info.GetDirectories())
                 {
                     try
                     {
-                        Debug.Log("Checking for: " + Path.Combine(directoryPath, item.Name, $"{profileType}.txt"));
+                        //Debug.Log("Checking for: " + Path.Combine(directoryPath, item.Name, $"{profileType}.txt"));
                         string temp = File.ReadAllText(Path.Combine(directoryPath, item.Name, $"{profileType}.txt"));
-                        Debug.Log("Found voice pack: " + temp);
+                        Debug.Log($"Found voice pack: {temp} ({item.FullName})");
 
                         if (audioProfiles.Any(p => p.name == temp))
                         {
                             Debug.Log($"We already have a {temp}, skipping...");
+                            Debug.Log("\n");
                             continue;
                         }
 
@@ -44,16 +45,20 @@ namespace CheeseMods.CustomSounds
                     }
                     catch
                     {
-                        Debug.Log(item.Name + " is not a voice pack.");
+                        //Debug.Log(item.Name + " is not a voice pack.");
+                        //Debug.Log("\n");
                     }
-                    Debug.Log("\n");
                 }
             }
             else
             {
                 Debug.Log(directoryPath + " doesn't exist.");
             }
-            Debug.Log("Loading audioClips");
+        }
+
+        public void LoadAudioFile()
+        {
+            Debug.Log("Loading audio files!");
             StartCoroutine(LoadAudioFile(audioProfiles));
         }
 
@@ -70,9 +75,9 @@ namespace CheeseMods.CustomSounds
                 tasksInProgress.Add(profileTask);
                 for (int x = 0; x < profiles[y].lineTypes.Count; x++)
                 {
-                    profileTask.SetStatus($"Loading line type: {profiles[y].lineTypes[x].type}");
+                    profileTask.SetStatus($"Loading line type: {profiles[y].lineTypes[x].type} ({profiles[y].name})");
 
-                    TaskInfo lineTypeTask = VTOLTaskProgressManager.RegisterTask(Main.instance, $"{GetType().Name}: loading line type {profiles[y].lineTypes[x].type}");
+                    TaskInfo lineTypeTask = VTOLTaskProgressManager.RegisterTask(Main.instance, $"{GetType().Name}: loading line type {profiles[y].lineTypes[x].type} ({profiles[y].name})");
                     tasksInProgress.Add(lineTypeTask);
                     for (int i = 0; i < profiles[y].lineTypes[x].lines.Count; i++)
                     {
@@ -108,16 +113,14 @@ namespace CheeseMods.CustomSounds
 
                 mainTask.SetProgress((float)y / (float)profiles.Count);
             }
+
             ApplyAudio();
 
             tasksInProgress.Remove(mainTask);
             mainTask.FinishTask();
         }
 
-        protected virtual void ApplyAudio()
-        {
-
-        }
+        protected abstract void ApplyAudio();
 
         public virtual void UnloadAudioProfiles()
         {
