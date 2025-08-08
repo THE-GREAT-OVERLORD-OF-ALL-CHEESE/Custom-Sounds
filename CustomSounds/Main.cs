@@ -73,18 +73,22 @@ namespace CheeseMods.CustomSounds
 
             string localModsDir = Path.Combine(Directory.GetCurrentDirectory(), "@Mod Loader", @"Mods");
             LoadAudioProfilesInDir(localModsDir);
-
-            foreach (DirectoryInfo directory in new DirectoryInfo(localModsDir).EnumerateDirectories())
+            if (Directory.Exists(localModsDir))
             {
-                LoadAudioProfilesInDir(directory.FullName);
+                foreach (DirectoryInfo directory in new DirectoryInfo(localModsDir).EnumerateDirectories())
+                {
+                    LoadAudioProfilesInDir(directory.FullName);
+                }
             }
 
             string workshopModsDir = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\workshop\content\3018410");
             LoadAudioProfilesInDir(workshopModsDir);
-
-            foreach (DirectoryInfo directory in new DirectoryInfo(workshopModsDir).EnumerateDirectories())
+            if (Directory.Exists(workshopModsDir))
             {
-                LoadAudioProfilesInDir(directory.FullName);
+                foreach (DirectoryInfo directory in new DirectoryInfo(workshopModsDir).EnumerateDirectories())
+                {
+                    LoadAudioProfilesInDir(directory.FullName);
+                }
             }
 
             wingmenVoices.LoadAudioFile();
