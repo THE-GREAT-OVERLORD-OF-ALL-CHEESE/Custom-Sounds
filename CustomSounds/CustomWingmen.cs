@@ -82,11 +82,22 @@ namespace CheeseMods.CustomSounds
             output.name = profile.name;
             for (int i = 0; i < profile.lineTypes.Count; i++)
             {
-                WingmanVoiceProfile.MessageAudio target = output.messageProfiles.First(p => p.messageType.ToString() == profile.lineTypes[i].type);
+                WingmanVoiceProfile.MessageAudio messageAudio = GenerateMessageAudio(profile.lineTypes[i]);
+                WingmanVoiceProfile.MessageAudio target = output.messageProfiles.FirstOrDefault(p => p.messageType.ToString() == profile.lineTypes[i].type);
+                if (target == null)
+                {
+                    Debug.Log($"There are no lines of type: {profile.lineTypes[i].type}, we must add it ourselves.");
+
+                    List<WingmanVoiceProfile.MessageAudio> messageProfileList = output.messageProfiles.ToList();
+                    messageProfileList.Add(messageAudio);
+                    output.messageProfiles = messageProfileList.ToArray();
+                    continue;
+                }
+                
                 int targetIndex = output.messageProfiles.IndexOf(target);
                 if (profile.lineTypes[i].lines.Any())
                 {
-                    output.messageProfiles[targetIndex] = GenerateMessageAudio(profile.lineTypes[i]);
+                    output.messageProfiles[targetIndex] = messageAudio;
                 }
             }
             return output;
